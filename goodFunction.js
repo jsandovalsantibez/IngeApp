@@ -10,21 +10,28 @@ import { initializeApp } from '@firebase/app';
 import { getAuth, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut, 
-  initializeAuth,
-  getReactNativePersistence
-} from '@firebase/auth';
+  onAuthStateChanged, signOut, 
+  getReactNativePersistence, 
+  initializeAuth } 
+  from '@firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { firebaseConfig } from './firebase-config';
 
+const firebaseConfig = {
+  apiKey: "AIzaSyB1NZtvOnqJjzgEbexuXXk5Zk3uXXEWSws",
+  authDomain: "ingelecsa-8e017.firebaseapp.com",
+  databaseURL: "https://ingelecsa-8e017-default-rtdb.firebaseio.com",
+  projectId: "ingelecsa-8e017",
+  storageBucket: "ingelecsa-8e017.appspot.com",
+  messagingSenderId: "828229765127",
+  appId: "1:828229765127:web:818564ee76357b095882a2"
+};
 
 const asyncStoragePersistence = getReactNativePersistence(AsyncStorage);
 const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
+
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
   return (
@@ -129,7 +136,6 @@ export default App = () => {
 }
 
 AppRegistry.registerComponent('main', () => App);
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
