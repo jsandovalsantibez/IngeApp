@@ -5,7 +5,10 @@ import { View,
   TextInput, 
   Button, 
   StyleSheet, 
-  ScrollView } from 'react-native';
+  ScrollView,
+  ImageBackground,
+  Image,
+} from 'react-native';
 import { initializeApp } from '@firebase/app';
 import { getAuth, 
   createUserWithEmailAndPassword, 
@@ -18,8 +21,10 @@ import { getAuth,
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebaseConfig } from './firebase-config';
+import { BlurView } from 'expo-blur';
 
-
+const image = { uri: 'https://ingelecsa.cl/wp-content/uploads/2019/12/wallhaven-3k591v-scaled.jpg' };
+const profilePicture = { uri: 'https://media.licdn.com/dms/image/C4E0BAQGsPALxnMuXMQ/company-logo_200_200/0/1630592433369?e=2147483647&v=beta&t=ANpToykzNjNH9bgqPJN-lheIXuS45XToqN3qxLyKIzQ' };
 const asyncStoragePersistence = getReactNativePersistence(AsyncStorage);
 const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {
@@ -28,32 +33,60 @@ const auth = initializeAuth(app, {
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
   return (
-    <View style={styles.authContainer}>
-       <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{isLogin ? 'Inicio de Sesión' : 'Registro'}</Text>
+      <ImageBackground source={image} resizeMode="cover" style={[styles.image,StyleSheet.absoluteFill]}>
+      <ScrollView contentContainerStyle = {{
+        flex: 1,
+        width: '100',
+        heigth: '100',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <BlurView intensity={90}>
+          <View style={styles.login}>
+            <Image source={profilePicture} style={styles.profilePicture}/>
+            <View>
+              <Text style={{
+                fontSize: 17, 
+                fontWeight: '400', 
+                color: 'black'}}>
+                Correo Electrónico</Text>
+              <TextInput
+               style={styles.input}
+               value={email}
+               onChangeText={setEmail}
+               placeholder="usuario@ingelecsa.cl"
+               autoCapitalize="none"
+               />
+              <Text style={{
+                fontSize: 17, 
+                fontWeight: '400', 
+                color: 'black'}}>
+                                                   Contraseña</Text>
+              <TextInput 
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Clave"
+                secureTextEntry
+                />
+            </View>
 
-       <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        secureTextEntry
-      />
-      <View style={styles.buttonContainer}>
-        <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
-      </View>
+            <View style={styles.buttonContainer}>
+              <Button title={isLogin ? 'Ingresar' : 'Registrarse'} onPress={handleAuthentication} color="#3498db" />
+            </View>
 
-      <View style={styles.bottomContainer}>
-        <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-        </Text>
-      </View>
+            <View style={styles.bottomContainer}>
+              <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
+                {isLogin ? 'Registro' : 'Inicio de Sesión'}
+              </Text>
+            </View>
+            
+          </View>
+        </BlurView>
+      </ScrollView>
+      </ImageBackground>
     </View>
   );
 }
@@ -62,9 +95,9 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
     <View style={styles.authContainer}>
-      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.title}>Bienvenido</Text>
       <Text style={styles.emailText}>{user.email}</Text>
-      <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
+      <Button title="Cerrar Sesión" onPress={handleAuthentication} color="#e74c3c" />
     </View>
   );
 };
@@ -132,11 +165,37 @@ AppRegistry.registerComponent('main', () => App);
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
+  },
+  image: {
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f0f0f0',
+  },
+  text: {
+    color: 'white',
+    fontSize: 42,
+    lineHeight: 84,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: '#000000c0',
+  },
+  login: {
+    width: 370,
+    height: 600,
+    borderColor: '#fff',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 10,
+    alignContent: 'center',
+  },
+  profilePicture: {
+    width: 120,
+    height: 120,
+    borderRadius: 50,
+    borderColor: '#fff',
+    borderWidth: 2,
+    marginVertical: 30,
+    marginLeft: 123,
   },
   authContainer: {
     width: '80%',
@@ -152,12 +211,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
+    width: 350,
     height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    marginBottom: 16,
-    padding: 8,
-    borderRadius: 4,
+    borderColor: '#fff',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: '#ffffff90',
+    marginBottom: 20,
   },
   buttonContainer: {
     marginBottom: 16,
@@ -174,4 +236,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  button: {
+    width: 250,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#00CFEB90',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: '10,',
+    marginLeft: 50,
+    borderColor: '#fff',
+    borderWidth: 1,
+  }
 });
